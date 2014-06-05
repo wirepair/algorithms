@@ -130,6 +130,7 @@ func ShellSort(data Sorter) {
 	}
 }
 
+// Ported from http://algs4.cs.princeton.edu/22mergesort/MergeX.java.html
 func MergeSort(data Sorter) {
 	var aux Sorter
 	switch t := data.(type) {

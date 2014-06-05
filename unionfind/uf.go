@@ -8,18 +8,20 @@ import (
 	"os"
 )
 
+// UnionFind interface used for implementations of
+// quick-find, quick-union and weighted quick-union.
 type UnionFinder interface {
-	Init(N int64)
-	Count() int64
-	Connected(p, q int64) bool
-	Union(p, q int64)
-	Find(p int64) int64
+	Init(N int64)              // Sets number of sites.
+	Count() int64              // returns number of seperate components
+	Connected(p, q int64) bool // Searches to see if two points are connected
+	Union(p, q int64)          // updates connected sites.
+	Find(p int64) int64        // Finds the value of a site in our site list.
 }
 
 // An implementation of Quick-Find
 type UnionQuickFind struct {
-	id    []int64
-	count int64
+	id    []int64 // site array.
+	count int64   // number of components.
 }
 
 // Initializes our site container with
@@ -74,7 +76,7 @@ func (UF *UnionQuickFind) Find(p int64) int64 {
 
 // An implementation of Quick-Union
 type QuickUnionFind struct {
-	UnionQuickFind
+	UnionQuickFind // embeds id, count, Init, Connected and Count.
 }
 
 // iterates when p does not equal the value of
@@ -104,14 +106,14 @@ func (UF *QuickUnionFind) Union(p, q int64) {
 
 // An implementation of Weighted Quick Union
 type WeightedQuickUnion struct {
-	QuickUnionFind
-	sz []int64
+	QuickUnionFind         // embeds id, count, Find, Connected
+	sz             []int64 // holds the size of the tree.
 }
 
 // WeightedQuickUnion adds a second size array
-// for
+// to gauruntee logarithmic performance.
 func (UF *WeightedQuickUnion) Init(N int64) {
-	// UF.QuickUnionFind.Init(N) why loop twice...
+	// we could UF.QuickUnionFind.Init(N) but why loop twice...
 	UF.id = make([]int64, N)
 	UF.sz = make([]int64, N)
 	for i := int64(0); i < N; i++ {
@@ -127,6 +129,7 @@ func (UF *WeightedQuickUnion) Union(p, q int64) {
 	if i == j {
 		return
 	}
+	// make smaller root point to larger one.
 	if UF.sz[i] < UF.sz[j] {
 		UF.id[i] = j
 		UF.sz[j] += UF.sz[i]

@@ -10,6 +10,7 @@ import (
 type Helperers interface {
 	GetSites() (int64, error)
 	GetInt(intChan chan int64)
+	GetString(strChan chan string)
 	Close()
 }
 
@@ -40,6 +41,14 @@ func (h *Helper) GetInt(intChan chan<- int64) {
 		intChan <- val
 	}
 	close(intChan)
+}
+
+func (h *Helper) GetString(strChan chan<- string) {
+	h.scanner.Split(bufio.ScanWords)
+	for h.scanner.Scan() {
+		strChan <- h.scanner.Text()
+	}
+	close(strChan)
 }
 
 func (h *Helper) Close() {

@@ -76,8 +76,8 @@ func GetSortFunc(sortType string) SortFunc {
 		return ShellSort
 	case "merge":
 		return MergeSort
-		//case "quick":
-		//	return QuickSort
+	case "quick":
+		return QuickSort
 	}
 	// default.
 	return SelectionSort
@@ -186,6 +186,45 @@ func merge(src, dst Sorter, lo, mid, hi int) {
 		}
 	}
 	fmt.Printf("Finished merging\n")
+}
+
+func QuickSort(data Sorter) {
+	quickSort(data, 0, data.Len()-1)
+}
+
+func quickSort(data Sorter, lo, hi int) {
+	if hi <= lo {
+		return
+	}
+	j := partition(data, lo, hi)
+	quickSort(data, lo, j-1)
+	quickSort(data, j+1, hi)
+}
+
+func partition(data Sorter, lo, hi int) int {
+	i := lo
+	j := hi + 1
+	v := lo
+	for {
+		for {
+			i++
+			if !data.Less(i, v) || i == hi {
+				break
+			}
+		}
+		for {
+			j--
+			if !data.Less(v, j) || j == lo {
+				break
+			}
+		}
+		if i >= j {
+			break
+		}
+		data.Exch(i, j)
+	}
+	data.Exch(lo, j)
+	return j
 }
 
 var filename string
